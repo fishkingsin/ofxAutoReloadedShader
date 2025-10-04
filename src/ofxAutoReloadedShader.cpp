@@ -179,7 +179,9 @@ std::time_t ofxAutoReloadedShader::getLastModified( ofFile& _file )
 {
 	if( _file.exists() )
 	{
-        return std::filesystem::last_write_time(_file.path());
+		// https://www.reddit.com/r/cpp_questions/comments/x00hr2/get_last_write_time_of_file/
+		std::filesystem::file_time_type ftime = std::filesystem::last_write_time(_file.pathFS());
+		return std::chrono::duration_cast<std::chrono::seconds>(ftime.time_since_epoch()).count();
 	}
 	else
 	{
